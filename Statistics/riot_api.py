@@ -2,3 +2,7 @@
 
 import requests
 
+response = requests.get("https://www.casact.org/")
+
+print("hello world")
+print(response.text)
