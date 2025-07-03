@@ -1,8 +1,15 @@
-#This piece of the of code is to practice using APIs and obtaining datasets
+import requests #Package for making API calls
+import sys #Package allowing for the use of variables in CLI
 
-import requests
+#Get riot account PUUID using Account -v1 API point: get account by riot IF
+gameName = "xLazor"
+tagLine = "NA1"
+apiKey = sys.argv[1] #Enter Riot key when running script
 
-response = requests.get("https://www.casact.org/")
+getAccountUrl = f"/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}?api_key={apiKey}" #API with variables note thatf is added to interpolate
 
-print("hello world")
-print(response.text)
+
+response = requests.get(f"https://americas.api.riotgames.com{getAccountUrl}") #API call
+
+
+print(response)
