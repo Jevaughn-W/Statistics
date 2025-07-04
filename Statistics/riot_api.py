@@ -27,8 +27,12 @@ matchArr = matchResponse.json() #saves match IDs as an array
 matchData = []
 
 for match in matchArr:
-    GetMatchTimelineEndPoint= f"/lol/match/v5/matches/{match}/timeline?api_key={apiKey}"
+    GetMatchTimelineEndPoint= f"/lol/match/v5/matches/{match}?api_key={apiKey}"
     matchTimeline = requests.get(f"{api}{GetMatchTimelineEndPoint}") #API call for Match data
-    matchData.append(matchTimeline) #add 200 response for each match
+    
+    matchData.append({
+        "matchId": matchTimeline.json()['metadata']["matchId"],
+        "startTime": matchTimeline.json()["info"]["gameCreation"],
+        }) #add response (start, end and match ID) for each match
 
 print(matchData)
