@@ -1,5 +1,6 @@
 import pandas as pd
 import convert_timestamp as convert_timeStamp
+import count_daily_game as count_daily_game
 
 df = pd.read_csv('.\match_history.csv') #Read in match history as data frame
 
@@ -11,7 +12,19 @@ for timeStamp in df['startTime']:
 
 df['gameDates'] = convertedColumn #add new column
 
-print(df)
+gamesPlayedPerDay = count_daily_game.gamesPerDayCounter(df['gameDates']) #Counts the games played per day
+
+def findAverageDailyGames(gameDict): #Calculates average of the daily games played to be moved in helper file
+        countofRecords = 0
+        totalGames = 0
+        for day in gameDict:
+                countofRecords += 1
+                totalGames = gameDict[day] + totalGames
+        return totalGames / countofRecords
+
+print(findAverageDailyGames(gamesPlayedPerDay))
+
+
 
 
 '''
