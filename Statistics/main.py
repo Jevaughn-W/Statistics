@@ -7,14 +7,22 @@ import numpy as np
 
 df = pd.read_csv('.\match_history.csv') #Read in match history as data frame
 
-convertedColumn = [] #Placeholder for updated Date
+convertedDates = [] #Placeholder for updated Date
+convertedStartTime = [] #Placeholder for updated Date
+convertedEndTime =[] #Placeholder for updated Date
 
-#Converts startTime timestap to date
+#Converts startTime timestamp to date
 for timeStamp in df['startTime']:
-        convertedColumn.append(convert_timeStamp.convertTimeStamp(timeStamp))
+        convertedDates.append(convert_timeStamp.convertTimeStamp(timeStamp)) #Gets the date of the game
+        convertedStartTime.append(convert_timeStamp.convertTimeStamptoTime(timeStamp)) #Gets the time of the game
 
-df['gameDates'] = convertedColumn #add new column
+#Converts endTime time stamp to time
+for endTimeStamp in df['endTime']:
+        convertedEndTime.append(convert_timeStamp.convertTimeStamptoTime(endTimeStamp)) #Gets the end time of the game)
 
+df['gameDates'] = convertedDates #add new column for date
+df['gameStart'] = convertedStartTime #add new column for start time
+df['gameEnd'] = convertedEndTime #add new column for end time
 gamesPlayedPerDay = count_daily_game.gamesPerDayCounter(df['gameDates']) #Counts the games played per day
 
 def findAverageDailyGames(gameDict): #Calculates average of the daily games played to be moved in helper file
@@ -26,6 +34,12 @@ def findAverageDailyGames(gameDict): #Calculates average of the daily games play
         return totalGames / countofRecords
 
 avgGamesPerDay = findAverageDailyGames(gamesPlayedPerDay)
+
+#Caluculating the duration of the games
+duration = []
+for i in range(len(convertedStartTime)-1):
+        gameLength = convert_timeStamp.calculateDuration(convertedStartTime[i], convertedEndTime[i])
+        duration.append(gameLength)
 
 # Manual calculation of PMF
 # def poissonPlots(avgGames): #Function to calculate the plot points for a poisson distribution
@@ -55,5 +69,5 @@ Next Steps:
 1. Update dataframe with updated column - Complete
 2. Write function to summarize by day and count of games - Complete
 3. Estimate the average games per day - Complete
-4. Check out what is causing cap on number of records written
+4. Check out what is causing cap on number of records written - complete
 '''
