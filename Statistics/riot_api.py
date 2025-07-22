@@ -2,6 +2,7 @@ import requests #Package for making API calls
 import sys #Package allowing for the use of variables in CLI
 import json #allows python to convert json response to an object
 import pandas as pd #allows transformation of data and writing to CSV file
+import time #allows delay to bypass Riot's API limiter
 
 #Get riot account PUUID using Account -v1 API point: get account by riot ID
 gameName = "xLazor"
@@ -25,8 +26,9 @@ matchResponse = requests.get(f"{api}{getMatchesEndPoint}") #API call
 
 matchArr = matchResponse.json() #saves match IDs as an array
 
-#Get match information using Match-v5 API endpoint: get a matchline by match id
+# #Get match information using Match-v5 API endpoint: get a matchline by match id
 matchData = []
+requestCounter = 0
 
 for match in matchArr:
     GetMatchTimelineEndPoint= f"/lol/match/v5/matches/{match}?api_key={apiKey}"
@@ -35,7 +37,13 @@ for match in matchArr:
     matchData.append({
         "matchId": matchTimeline.json()['metadata']["matchId"],
         "startTime": matchTimeline.json()["info"]["gameCreation"],
+        "endTime": matchTimeline.json()["info"]["gameEndTimestamp"]
         }) #add response (start, end and match ID) for each match
+    requestCounter = requestCounter + 1
+    
+    if requestCounter % 20 == 0: 
+        time.sleep(1)
+
 
 # Creating structuring data and write to CSV file
 
